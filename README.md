@@ -376,3 +376,18 @@ PC1 - Vendas
 
 # Configurando Wi-fi
 
+
+Access-Point Interno Sede
+![[Pasted image 20250930232825.png]]
+
+Configurando roteador rede de visitantes 
+![[Pasted image 20250930233807.png]]
+![[Pasted image 20250930233756.png]]
+
+![[Pasted image 20250930233816.png]]
+
+Laptop conectado na rede de visitantes recebe ip na faixa 192.168.50.0/24
+![[Pasted image 20250930234000.png]]
+
+Laptop 0 na rede interna recebeu ip aleatório por que o roteador não faz o DHCP **(inclusive trocar depois para o mesmo tipo de roteador da rede de visitantes se quiserem - vai precisar refazer as configs feitas em roteador)**
+![[Pasted image 20250930234107.png]]
