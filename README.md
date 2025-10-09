@@ -1,6 +1,9 @@
 Estrutura inicial
 ![[Pasted image 20250930175001.png]]
 
+**Link da documentação**
+https://docs.google.com/document/d/1e0-dahO6C6x7vIoi7OLVSo8FlqZmh4BoCYqz1fqY5mo/edit?usp=sharing
+
 # Configurando Switch 1 - Sede
 
 **Configurando Vlans para segmentação de rede**
