@@ -394,3 +394,117 @@ Laptop conectado na rede de visitantes recebe ip na faixa 192.168.50.0/24
 
 Laptop 0 na rede interna recebeu ip aleatório por que o roteador não faz o DHCP **(inclusive trocar depois para o mesmo tipo de roteador da rede de visitantes se quiserem - vai precisar refazer as configs feitas em roteador)**
 ![[Pasted image 20250930234107.png]]
+
+# Configurando Switch 1 - Filial 2
+```Bash
+Switch(config)# vlan 10
+Switch(config-vlan)# name F2_Staff
+Switch(config-vlan)# exit
+Switch(config)# vlan 20
+Switch(config-vlan)# name F2_Guest
+Switch(config-vlan)# exit
+Switch(config)#
+````
+Atribuindo os PCs à VLAN 10 (Staff)
+```Bash
+Switch(config)# interface range fa0/2 - 3
+Switch(config-if-range)# switchport mode access
+Switch(config-if-range)# switchport access vlan 10
+Switch(config-if-range)# exit
+```
+Configurando router como Trunk e Switch 2 como Trunk
+```Bash
+Switch(config)# interface fa0/1
+Switch(config-if)# switchport mode trunk
+Switch(config-if)# exit
+
+Switch(config)# interface fa0/24
+Switch(config-if)# switchport mode trunk
+Switch(config-if)# exit
+Switch(config)# end
+Switch# write memory
+```
+
+# Configurando Switch 2 - Filial 2
+```Bash
+Switch(config)# vlan 10
+Switch(config-vlan)# name F2_Staff
+Switch(config-vlan)# exit
+Switch(config)# vlan 20
+Switch(config-vlan)# name F2_Guest
+Switch(config-vlan)# exit
+Switch(config)#
+```
+
+Configurando as portas dos PCs Guest (portas Fe0/4 e Fe/0/5)
+```Bash
+Switch(config)# interface range fa0/4 - 5
+Switch(config-if-range)# switchport mode access
+Switch(config-if-range)# switchport access vlan 20
+Switch(config-if-range)# exit
+```
+
+# Configurando o Access Point e Guest Wi-fi
+```Bash
+Switch(config)# interface fa0/3
+Switch(config-if)# switchport mode access
+Switch(config-if)# switchport access vlan 10
+Switch(config-if)# exit
+
+Switch(config)# interface fa0/2
+Switch(config-if)# switchport mode access
+Switch(config-if)# switchport access vlan 20
+Switch(config-if)# exit
+```
+#Link entre Switch 1 e 2
+```Bash
+Switch(config)# interface fa0/24
+Switch(config-if)# switchport mode trunk
+Switch(config-if)# exit
+Switch(config)# end
+Switch# write memory
+```
+
+#Configuração do Router da Filiar 2
+```Bash
+Router> enable
+Router# configure terminal
+Router(config)#
+Router(config)# interface gigabitEthernet0/0
+Router(config-if)# no shutdown
+Router(config-if)# exit
+Router(config)# interface gigabitEthernet0/0.10
+Router(config-subif)# encapsulation dot1Q 10
+Router(config-subif)# ip address 10.0.210.1 255.255.255.192
+Router(config-subif)# exit
+Router(config)# interface gigabitEthernet0/0.20
+Router(config-subif)# encapsulation dot1Q 20
+Router(config-subif)# ip address 10.0.220.1 255.255.255.192
+Router(config-subif)# exit
+Router(config)# end
+Router# write memory
+```
+
+#Configuração do DHCP no Router da Filial 2
+Configurando DHCP Vlan 10 (Staff) Vlan 20 (Guest)
+```Bash
+Router> enable
+Router# configure terminal
+Router(config)#
+Router(config)# ip dhcp excluded-address 10.0.210.1 10.0.210.10
+Router(config)# ip dhcp excluded-address 10.0.220.1 10.0.220.10
+Router(config)# ip dhcp pool F2-STAFF
+Router(dhcp-config)# network 10.0.210.0 255.255.255.192
+Router(dhcp-config)# default-router 10.0.210.1
+Router(dhcp-config)# dns-server 8.8.8.8
+Router(dhcp-config)# exit
+Router(config)# ip dhcp pool F2-GUEST
+Router(dhcp-config)# network 10.0.220.0 255.255.255.192
+Router(dhcp-config)# default-router 10.0.220.1
+Router(dhcp-config)# dns-server 8.8.8.8
+Router(dhcp-config)# exit
+Router(config)# end
+Router# write memory
+```
+
+#Configurar conexão entre Filial 2 e Sede
