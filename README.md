@@ -508,3 +508,32 @@ Router# write memory
 ```
 
 #Configurar conexão entre Filial 2 e Sede
+Roteador da Sede
+```Bash
+enable
+configure terminal
+interface gigabitEthernet0/1
+ ip address 10.10.10.1 255.255.255.252
+ no shutdown
+exit
+```
+Roteador da Filial 2
+```Bash
+enable
+configure terminal
+interface gigabitEthernet0/1
+ ip address 10.10.10.2 255.255.255.252
+ no shutdown
+exit
+```
+
+Rotas estáticas na filial e na sede
+Filial
+```Bash
+ip route 192.168.0.0 255.255.0.0 10.10.10.1
+```
+Sede
+```Bash
+ip route 192.168.20.0 255.255.255.192 10.10.10.2
+ip route 192.168.20.64 255.255.255.192 10.10.10.2
+```
